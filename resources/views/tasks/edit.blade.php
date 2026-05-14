@@ -151,9 +151,10 @@
                         Deadline
                     </label>
 
-                    <input type="date"
+                    <input type="datetime-local"
                            name="deadline"
-                           value="{{ $task->deadline }}"
+                           step="60"
+                           value="{{ old('deadline') }}"
                            class="w-full border rounded-lg p-3">
 
                 </div>

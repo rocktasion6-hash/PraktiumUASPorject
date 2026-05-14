@@ -53,7 +53,7 @@
                     </td>
 
                     <td class="p-3">
-                        {{ $task->deadline }}
+                        {{ \Carbon\Carbon::parse($task->deadline)->translatedFormat('d F Y, H:i') }}
                     </td>
 
                     <td class="p-3 flex gap-2">

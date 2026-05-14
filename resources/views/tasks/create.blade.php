@@ -149,15 +149,14 @@
                 <!-- Deadline -->
 
                 <div class="mb-6">
-
                     <label class="block font-semibold mb-2">
                         Deadline
                     </label>
-
-                    <input type="date"
-                           name="deadline"
-                           class="w-full border rounded-lg p-3">
-
+                    <input type="datetime-local"
+                        name="deadline"
+                        step="60"
+                        value="{{ old('deadline') }}"
+                        class="w-full border rounded-lg p-3">
                 </div>
 
                 <!-- Button -->
