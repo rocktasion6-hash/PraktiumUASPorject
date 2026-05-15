@@ -3,7 +3,6 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -17,20 +16,17 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 
 // --- GRUP ROUTE KHUSUS ADMIN ---
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    
+    // Monitoring Global (Daftar semua tugas)
+    Route::get('/monitoring', [TaskController::class, 'index'])->name('tasks.index');
 
-    Route::get('/monitoring', [TaskController::class, 'index'])->name('index');
+    // Detail Tugas
+    Route::get('/tasks/{task}', [TaskController::class, 'show'])->name('tasks.show');
 
-    Route::get('/tasks/{task}', [TaskController::class, 'show'])->name('show');
-
-    // Gunakan nama 'admin.dashboard' agar tidak bentrok dengan dashboard utama
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-    // Monitoring Global (Kelola Semua Tugas) -> admin.index
-    Route::get('/', [TaskController::class, 'index'])->name('index');
-
-    // Detail & Komentar -> admin.show / admin.tasks.comments
-    Route::get('/tasks/{task}', [TaskController::class, 'show'])->name('show');
+    // Simpan Komentar Admin (Feedback)
     Route::post('/tasks/{task}/comments', [TaskController::class, 'storeComment'])->name('tasks.comments');
+    
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
 // --- AREA LOGIN USER ---
@@ -38,10 +34,12 @@ Route::middleware('auth')->group(function () {
     // CRUD Tugas User (index, create, store, edit, update, destroy)
     Route::resource('tasks', TaskController::class);
 
-    // Profile & AI
+    // Profile Settings
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Fitur AI
     Route::post('/tasks/{task}/analyze', [TaskController::class, 'analyze'])->name('tasks.analyze');
 });
 

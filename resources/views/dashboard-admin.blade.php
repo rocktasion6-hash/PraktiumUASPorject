@@ -106,7 +106,7 @@
             <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="p-6 flex justify-between items-center border-b border-gray-50">
                     <h2 class="text-xl font-bold text-gray-800">Monitoring Tugas</h2>
-                    <a href="{{ route('admin.index') }}" class="text-indigo-600 hover:text-indigo-700 text-sm font-semibold">Kelola Semua Tugas</a>
+                    <a href="{{ route('admin.tasks.index') }}" class="text-indigo-600 hover:text-indigo-700 text-sm font-semibold">Kelola Semua Tugas</a>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">

@@ -15,46 +15,38 @@ class TaskController extends Controller
 {
     /**
      * Menampilkan daftar tugas.
-     * Admin melihat halaman Monitoring dengan variabel $allTasks.
-     * User melihat daftar tugas miliknya sendiri dengan variabel $tasks.
+     * Menggunakan role === 'admin' agar sinkron dengan dashboard.
      */
     public function index()
     {
-        // Cek jika user yang login adalah Admin
-        if (Auth::user()->is_admin) {
-            // Mengambil semua tugas untuk halaman Monitoring
-            // Nama variabel disamakan dengan file Blade: $allTasks
+        $user = Auth::user();
+
+        // Cek jika user yang login adalah Admin (menggunakan kolom role)
+        if ($user->role === 'admin') {
+            // Mengambil SEMUA tugas tanpa filter user_id agar Monitoring penuh
             $allTasks = Task::with(['category', 'status', 'user'])
                 ->latest()
                 ->get(); 
 
-            // Mengarah ke resources/views/admin/index.blade.php
             return view('admin.index', compact('allTasks'));
         }
 
-        // Jika User Biasa
+        // Jika User Biasa, hanya lihat miliknya
         $tasks = Task::with(['category', 'status'])
-            ->where('user_id', Auth::id())
+            ->where('user_id', $user->id)
             ->latest()
             ->get();
 
         return view('tasks.index', compact('tasks'));
     }
 
-    /**
-     * Form tambah tugas (Hanya untuk User)
-     */
     public function create()
     {
         $categories = Category::all();
         $statuses = TaskStatus::all();
-
         return view('tasks.create', compact('categories', 'statuses'));
     }
 
-    /**
-     * Simpan tugas baru
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -76,13 +68,9 @@ class TaskController extends Controller
             'deadline' => $request->deadline,
         ]);
 
-        return redirect()->route('tasks.index')
-            ->with('success', 'Tugas berhasil ditambahkan');
+        return redirect()->route('tasks.index')->with('success', 'Tugas berhasil ditambahkan');
     }
 
-    /**
-     * Tampilkan Detail Tugas
-     */
     public function show(Task $task)
     {
         $task->load([
@@ -93,21 +81,17 @@ class TaskController extends Controller
             'recommendations'
         ]);
 
-        // Jika Admin yang melihat detail, gunakan view khusus feedback
-        if (Auth::user()->is_admin) {
+        // Cek admin untuk menentukan view
+        if (Auth::user()->role === 'admin') {
             return view('admin.show', compact('task'));
         }
 
         return view('tasks.show', compact('task'));
     }
 
-    /**
-     * Form edit tugas
-     */
     public function edit(Task $task)
     {
-        // Pastikan user hanya bisa edit tugas miliknya sendiri
-        if ($task->user_id !== Auth::id() && !Auth::user()->is_admin) {
+        if ($task->user_id !== Auth::id() && Auth::user()->role !== 'admin') {
             abort(403);
         }
 
@@ -117,9 +101,6 @@ class TaskController extends Controller
         return view('tasks.edit', compact('task', 'categories', 'statuses'));
     }
 
-    /**
-     * Update tugas
-     */
     public function update(Request $request, Task $task)
     {
         $request->validate([
@@ -133,20 +114,14 @@ class TaskController extends Controller
 
         $task->update($request->all());
 
-        // Redirect kembali ke halaman yang sesuai dengan role
-        $redirectRoute = Auth::user()->is_admin ? 'admin.index' : 'tasks.index';
+        $redirectRoute = Auth::user()->role === 'admin' ? 'admin.tasks.index' : 'tasks.index';
 
-        return redirect()->route($redirectRoute)
-            ->with('success', 'Tugas berhasil diupdate');
+        return redirect()->route($redirectRoute)->with('success', 'Tugas berhasil diupdate');
     }
 
-    /**
-     * Hapus tugas
-     */
     public function destroy(Task $task)
     {
         $task->delete();
-
         return back()->with('success', 'Tugas berhasil dihapus');
     }
 
@@ -161,24 +136,18 @@ class TaskController extends Controller
 
         $task->comments()->create([
             'user_id' => Auth::id(),
-            'comment' => $request->comment
+            'comment' => $request->comment 
         ]);
 
         return back()->with('success', 'Komentar/Feedback berhasil dikirim.');
     }
 
-    /**
-     * Analisis Tugas menggunakan AI
-     */
     public function analyze(string $id)
     {
         $task = Task::findOrFail($id);
         try {
             $response = TaskAgent::make()->prompt(
-                "Judul: {$task->title}
-                 Deskripsi: {$task->description}
-                 Deadline: {$task->deadline}
-                 Prioritas: {$task->priority}"
+                "Judul: {$task->title} Deskripsi: {$task->description} Deadline: {$task->deadline} Prioritas: {$task->priority}"
             );
 
             AiRecommendation::create([
