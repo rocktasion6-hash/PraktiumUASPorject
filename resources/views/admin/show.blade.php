@@ -1,101 +1,93 @@
 <x-app-layout>
-    <div class="p-8 bg-gray-50 min-h-screen">
-        <!-- Breadcrumbs / Back Button -->
-        <div class="mb-6">
-            <a href="{{ route('admin.tasks.index') }}" class="text-sm text-gray-500 hover:text-indigo-600 flex items-center gap-2 transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-                Kembali ke Monitoring
-            </a>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #FFFFFF; }
+    </style>
+
+    <div class="max-w-7xl mx-auto p-8 bg-white min-h-screen">
+        
+        <div class="flex justify-between items-center mb-8 border-b border-gray-100 pb-5">
+            <div>
+                <h1 class="text-3xl font-extrabold text-[#0A2540] tracking-tight">Detail Pemantauan Tugas</h1>
+                <p class="text-sm text-gray-400 mt-1">Tinjau rincian tugas pengguna dan berikan arahan evaluasi.</p>
+            </div>
+            <div>
+                <a href="{{ route('admin.tasks.index') }}" 
+                   class="p-3 inline-flex items-center text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-xl transition shadow-sm" 
+                   title="Kembali ke Monitoring">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                </a>
+            </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- SISI KIRI: Detail Tugas (Span 2) -->
+            
             <div class="lg:col-span-2 space-y-6">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-                    <!-- Judul & Status -->
-                    <div class="flex justify-between items-start mb-6">
-                        <div>
-                            <span class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest bg-indigo-50 px-3 py-1 rounded-full">
-                                {{ $task->category->name ?? 'Tugas Projects' }}
-                            </span>
-                            <h1 class="text-3xl font-bold text-gray-800 mt-3">{{ $task->title }}</h1>
-                        </div>
+                <div class="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
+                    
+                    <div class="bg-[#0A2540] px-6 py-4 flex justify-between items-center">
+                        <span class="text-[10px] font-black text-white uppercase tracking-widest bg-white/10 px-3 py-1 rounded-md border border-white/20">
+                            {{ $task->category->name ?? 'Tugas Projects' }}
+                        </span>
                         <div class="text-right">
-                            <p class="text-xs text-gray-400 mb-1">Status Saat Ini:</p>
-                            <span class="px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase shadow-sm 
-                                {{ $task->status->name == 'Selesai' ? 'bg-emerald-500 text-white' : 'bg-amber-400 text-white' }}">
+                            <span class="px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-wider bg-orange-50 text-[#FF6B00] border border-orange-100/50 shadow-2xs">
                                 {{ $task->status->name }}
                             </span>
                         </div>
                     </div>
 
-                    <!-- Deskripsi -->
-                    <div class="prose prose-indigo max-w-none text-gray-600">
-                        <h4 class="text-sm font-bold text-gray-800 uppercase mb-2">Deskripsi Tugas:</h4>
-                        <p class="leading-relaxed">
-                            {{ $task->description ?? 'Tidak ada deskripsi tambahan.' }}
-                        </p>
-                    </div>
+                    <div class="p-8 space-y-8">
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1">Judul Tugas</label>
+                            <h2 class="text-2xl font-extrabold text-[#0A2540] leading-tight">{{ $task->title }}</h2>
+                        </div>
 
-                    <!-- Meta Informasi (Deadline & Progress) -->
-                    <div class="grid grid-cols-2 gap-4 mt-10 pt-8 border-t border-gray-50">
-                        <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl">
-                            <div class="bg-white p-2 rounded-lg shadow-sm text-rose-500">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="text-[10px] text-gray-400 font-bold uppercase">Batas Waktu</p>
-                                <p class="text-sm font-bold text-gray-700">{{ \Carbon\Carbon::parse($task->deadline)->format('d F Y') }}</p>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Deskripsi Tugas</label>
+                            <div class="text-sm text-gray-600 font-medium leading-relaxed bg-gray-50 p-5 rounded-xl border border-gray-100 whitespace-pre-line">
+                                {{ $task->description ?? 'Tidak ada deskripsi tambahan untuk tugas ini.' }}
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl">
-                            <div class="bg-white p-2 rounded-lg shadow-sm text-indigo-500">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                </svg>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-gray-50">
+                            <div class="flex items-center gap-4 p-4 bg-gray-50/60 border border-gray-100/70 rounded-xl">
+                                <div class="bg-white p-2.5 rounded-lg shadow-2xs text-[#FF6B00] border border-gray-100">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-[9px] text-gray-400 font-black uppercase tracking-wider mb-0.5">Batas Waktu</p>
+                                    <p class="text-sm font-bold text-[#0A2540]">{{ \Carbon\Carbon::parse($task->deadline)->translatedFormat('d F Y, H:i') }}</p>
+                                </div>
                             </div>
-                            <div>
-                                <p class="text-[10px] text-gray-400 font-bold uppercase">Pemilik Tugas</p>
-                                <p class="text-sm font-bold text-gray-700">{{ $task->user->name }}</p>
+
+                            <div class="flex items-center gap-4 p-4 bg-gray-50/60 border border-gray-100/70 rounded-xl">
+                                <div class="bg-white p-2.5 rounded-lg shadow-2xs text-[#FF6B00] border border-gray-100">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-[9px] text-gray-400 font-black uppercase tracking-wider mb-0.5">Pemilik Tugas</p>
+                                    <p class="text-sm font-bold text-[#0A2540]">{{ $task->user->name }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Bagian Attachment / Lampiran (Opsional) -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                    <h4 class="text-sm font-bold text-gray-800 mb-4 flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
-                        </svg>
-                        Lampiran File
-                    </h4>
-                    @if($task->attachment)
-                        <a href="{{ asset('storage/' . $task->attachment) }}" target="_blank" class="inline-flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50 transition-colors group">
-                            <div class="bg-rose-100 text-rose-600 p-2 rounded-lg group-hover:bg-rose-600 group-hover:text-white transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                                </svg>
-                            </div>
-                            <span class="text-sm font-medium text-gray-600">Lihat Hasil Tugas</span>
-                        </a>
-                    @else
-                        <p class="text-xs text-gray-400 italic font-medium">Belum ada file yang diunggah.</p>
-                    @endif
                 </div>
             </div>
 
-            <!-- SISI KANAN: Partial Komentar (Span 1) -->
             <div class="lg:col-span-1">
                 <div class="sticky top-8">
                     @include('admin.comment')
                 </div>
             </div>
+
         </div>
     </div>
 </x-app-layout>

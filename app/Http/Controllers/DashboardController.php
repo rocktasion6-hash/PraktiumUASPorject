@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
-use App\Models\User; // Tambahkan ini jika ingin menghitung total user
+use App\Models\User;
+use App\Models\Category; // Tambahkan model Category
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
@@ -12,11 +13,10 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $isAdmin = $user->role === 'admin'; // Cek role sekali di awal
+        $isAdmin = $user->role === 'admin'; 
         $today = now()->toDateString();
 
         // --- 1. Statistik Utama ---
-        // Jika admin, hitung semua. Jika user, hitung miliknya saja.
         $totalTasks = Task::when(!$isAdmin, fn($q) => $q->where('user_id', $user->id))->count();
 
         $completedTasks = Task::when(!$isAdmin, fn($q) => $q->where('user_id', $user->id))
@@ -27,11 +27,10 @@ class DashboardController extends Controller
             ->whereHas('status', fn($q) => $q->where('name', 'Belum Dikerjakan'))
             ->count();
 
-        // Tambahan statistik khusus Admin (Opsional)
         $totalUsers = $isAdmin ? User::count() : 0;
 
         // --- 2. Tugas Prioritas (Maksimal 7) ---
-        $latestTasks = Task::with(['category', 'status', 'user']) // Eager load 'user' agar admin tahu tugas siapa
+        $latestTasks = Task::with(['category', 'status', 'user']) 
             ->when(!$isAdmin, fn($q) => $q->where('user_id', $user->id))
             ->whereDate('deadline', '>=', $today)
             ->whereHas('status', fn($q) => $q->where('name', '!=', 'Selesai'))
@@ -56,7 +55,7 @@ class DashboardController extends Controller
             ->orderByRaw("FIELD(priority, 'high', 'medium', 'low') ASC")
             ->first();
 
-        // --- 5. Persiapan Data Chart (7 Hari Terakhir) ---
+        // --- 5. Persiapan Data Chart Aktivitas Mingguan ---
         $lastSevenDays = collect(range(6, 0))->map(fn($i) => now()->subDays($i)->format('Y-m-d'));
 
         $getStatusData = function($statusName) use ($lastSevenDays, $user, $isAdmin) {
@@ -76,6 +75,25 @@ class DashboardController extends Controller
         $chartProses    = $getStatusData('Sedang Dikerjakan');
         $chartBelum     = $getStatusData('Belum Dikerjakan');
 
+        // --- 6. STATISTIK KATEGORI UNTUK PIE CHART (DITAMBAHKAN) ---
+        $categoriesData = Category::withCount('tasks')->get();
+        $categoryLabels = $categoriesData->pluck('name');
+        $categoryCounts = $categoriesData->pluck('tasks_count');
+        
+        // Mapping string warna dari DB ke kode warna Hex nyata
+        $categoryColors = $categoriesData->map(function($cat) {
+            return match(strtolower($cat->color ?? '')) {
+                'blue'   => '#3b82f6',
+                'green'  => '#22c55e',
+                'red'    => '#ef4444',
+                'yellow' => '#eab308',
+                'purple' => '#a855f7',
+                'orange' => '#FF6B00',
+                'gray'   => '#94a3b8',
+                default  => '#0A2540'
+            };
+        });
+
         $view = $isAdmin ? 'dashboard-admin' : 'dashboard';
 
         return view($view, compact(
@@ -90,7 +108,10 @@ class DashboardController extends Controller
             'chartDitunda',
             'chartProses',
             'chartBelum',
-            'totalUsers'
+            'totalUsers',
+            'categoryLabels',
+            'categoryCounts',
+            'categoryColors'
         ));
     }
 }
