@@ -34,40 +34,6 @@
             </button>
         </form>
     </div>
-
-    <div class="border-t border-gray-50 pt-6">
-        <h4 class="text-xs font-bold text-gray-400 uppercase mb-4 tracking-wider">Riwayat Diskusi</h4>
-        
-        <div class="space-y-4 max-h-[320px] overflow-y-auto pr-2 custom-scrollbar">
-            @forelse($task->comments as $comment)
-                <div class="p-4 rounded-2xl {{ $comment->user->role === 'admin' ? 'bg-orange-50/40 border border-orange-100/60' : 'bg-gray-50 border border-gray-100' }}">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs font-extrabold {{ $comment->user->role === 'admin' ? 'text-[#FF6B00]' : 'text-[#0A2540]' }}">
-                            {{ $comment->user->name }} 
-                            @if($comment->user->role === 'admin') 
-                                <span class="text-[9px] ml-1 bg-[#0A2540] text-white px-1.5 py-0.5 rounded font-black uppercase tracking-wider">Admin</span>
-                            @endif
-                        </span>
-                        <span class="text-[10px] text-gray-400 font-medium">
-                            {{ $comment->created_at->diffForHumans() }}
-                        </span>
-                    </div>
-                    <p class="text-sm text-gray-600 font-medium leading-relaxed">
-                        {{ $comment->comment }}
-                    </p>
-                </div>
-            @empty
-                <div class="text-center py-8">
-                    <div class="bg-gray-50 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 border border-gray-100/60">
-                        <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                        </svg>
-                    </div>
-                    <p class="text-xs text-gray-400 italic">Belum ada diskusi atau feedback.</p>
-                </div>
-            @endforelse
-        </div>
-    </div>
 </div>
 
 <style>

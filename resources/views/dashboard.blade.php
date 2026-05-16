@@ -12,13 +12,6 @@
                 <span class="inline-flex items-center px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-[#0A2540] uppercase tracking-wider">
                     {{ now()->translatedFormat('l, d F Y') }}
                 </span>
-                <a href="{{ route('tasks.create') }}"
-                    class="inline-flex items-center gap-2 bg-[#FF6B00] hover:bg-[#e05e00] text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-sm active:scale-95">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                    Tambah Tugas
-                </a>
             </div>
         </div>
 
@@ -44,7 +37,7 @@
             </div>
 
             <div class="bg-white p-6 rounded-2xl shadow-sm flex items-center gap-4 border border-gray-100">
-                <div class="p-4 bg-slate-50 rounded-full text-[#0A2540]">
+                <div class="p-4 bg-slate-50 rounded-full text-[#FF6B00]">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
                 <div>
@@ -133,7 +126,7 @@
                                 </td>
                                 <td class="px-6 py-4 text-gray-500 text-sm font-semibold">
                                     {{ \Carbon\Carbon::parse($task->deadline)->translatedFormat('d M, H:i') }}
-                                endphp</td>
+                                </td>
                             </tr>
                             @empty
                             <tr>

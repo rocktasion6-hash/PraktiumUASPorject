@@ -40,14 +40,6 @@
                     </svg>
                     Kelola Status
                 </a>
-
-                <a href="{{ route('tasks.create') }}"
-                    class="inline-flex items-center gap-2 bg-[#FF6B00] hover:bg-[#e05e00] text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-sm active:scale-95">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                    Tambah Tugas
-                </a>
             </div>
         </div>
 
