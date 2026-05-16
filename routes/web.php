@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AdminCategoryController;
+use App\Http\Controllers\AdminStatusController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -27,6 +29,18 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/tasks/{task}/comments', [TaskController::class, 'storeComment'])->name('tasks.comments');
     
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Manajemen Kategori
+    Route::get('/categories', [AdminCategoryController::class, 'index'])->name('categories.index');
+    Route::post('/categories', [AdminCategoryController::class, 'store'])->name('categories.store');
+    Route::put('/categories/{category}', [AdminCategoryController::class, 'update'])->name('categories.update');
+    Route::delete('/categories/{category}', [AdminCategoryController::class, 'destroy'])->name('categories.destroy');
+
+    // Manajemen Status
+    Route::get('/statuses', [AdminStatusController::class, 'index'])->name('statuses.index');
+    Route::post('/statuses', [AdminStatusController::class, 'store'])->name('statuses.store');
+    Route::put('/statuses/{status}', [AdminStatusController::class, 'update'])->name('statuses.update');
+    Route::delete('/statuses/{status}', [AdminStatusController::class, 'destroy'])->name('statuses.destroy');
 });
 
 // --- AREA LOGIN USER ---
